@@ -16,6 +16,7 @@
   </properties>
 
   <dependencies>
+    <!-- Picocli for CLI parsing -->
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
@@ -25,7 +26,7 @@
 
   <build>
     <plugins>
-      <!-- Compile for Java 17 -->
+      <!-- Compile with Java 17 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -35,7 +36,7 @@
         </configuration>
       </plugin>
 
-      <!-- Ensure even the plain jar has a Main-Class -->
+      <!-- Ensure the thin jar has a Main-Class -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -59,13 +60,14 @@
         </configuration>
       </plugin>
 
-      <!-- Produce a fat shaded jar -->
+      <!-- Produce an executable shaded jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.5.1</version>
         <executions>
           <execution>
+            <id>shade-it</id>
             <phase>package</phase>
             <goals><goal>shade</goal></goals>
             <configuration>
