@@ -8,59 +8,71 @@
   <version>1.0.0</version>
   <packaging>jar</packaging>
   <name>impact-cli</name>
-  <description>CLI app using Picocli</description>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <picocli.version>4.7.5</picocli.version>
+    <shade.version>3.5.1</shade.version>
+    <exec.version>3.5.1</exec.version>
+    <compiler.version>3.11.0</compiler.version>
   </properties>
 
   <dependencies>
-    <!-- Picocli for CLI parsing -->
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.7.5</version>
+      <version>${picocli.version}</version>
     </dependency>
   </dependencies>
 
-<build>
-  <plugins>
-    <!-- Java 17 compile -->
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-compiler-plugin</artifactId>
-      <version>3.11.0</version>
-      <configuration>
-        <release>17</release>
-      </configuration>
-    </plugin>
+  <build>
+    <plugins>
+      <!-- Java 17 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.version}</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
 
-    <!-- Make an executable "jar-with-dependencies" -->
-   <plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-shade-plugin</artifactId>
-  <version>3.5.1</version>
-  <executions>
-    <execution>
-      <phase>package</phase>
-      <goals><goal>shade</goal></goals>
-      <configuration>
-        <createDependencyReducedPom>false</createDependencyReducedPom>
-        <shadedArtifactAttached>true</shadedArtifactAttached>
-        <shadedClassifierName>shaded</shadedClassifierName>
-        <transformers>
-          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-            <mainClass>com.example.ImpactApp</mainClass>
-          </transformer>
-        </transformers>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
+      <!-- Run with: mvn exec:java -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec.version}</version>
+        <configuration>
+          <mainClass>com.example.ImpactApp</mainClass>
+        </configuration>
+      </plugin>
 
-</build>
-
-
+      <!-- Produce target/impact-cli-1.0.0-shaded.jar at package -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${shade.version}</version>
+        <executions>
+          <execution>
+            <id>shade-it</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>shaded</shadedClassifierName>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.example.ImpactApp</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
