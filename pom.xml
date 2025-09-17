@@ -13,9 +13,6 @@
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <picocli.version>4.7.5</picocli.version>
-    <shade.version>3.5.1</shade.version>
-    <exec.version>3.5.1</exec.version>
-    <compiler.version>3.11.0</compiler.version>
   </properties>
 
   <dependencies>
@@ -28,38 +25,49 @@
 
   <build>
     <plugins>
-      <!-- Java 17 -->
+      <!-- Compile for Java 17 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.version}</version>
+        <version>3.11.0</version>
         <configuration>
           <release>${maven.compiler.release}</release>
         </configuration>
       </plugin>
 
-      <!-- Run with: mvn exec:java -->
+      <!-- Ensure even the plain jar has a Main-Class -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.example.ImpactApp</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- Run with mvn exec:java -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>${exec.version}</version>
+        <version>3.5.1</version>
         <configuration>
           <mainClass>com.example.ImpactApp</mainClass>
         </configuration>
       </plugin>
 
-      <!-- Produce target/impact-cli-1.0.0-shaded.jar at package -->
+      <!-- Produce a fat shaded jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>${shade.version}</version>
+        <version>3.5.1</version>
         <executions>
           <execution>
-            <id>shade-it</id>
             <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
+            <goals><goal>shade</goal></goals>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <shadedArtifactAttached>true</shadedArtifactAttached>
